@@ -1,0 +1,71 @@
+# JSON does not support comment, just writing here and below after # as for information.
+---------------------- example with an array of values (list)-------------------
+{
+    "Repository": "quay.io/redhattraining/books",
+	  "Parent": "",
+      "Comment": "",
+    "Tags": [
+        "v1.0",
+        "v1.1",
+        "v1.2",
+        "v1.3",
+        "latest",
+        "v1.4"
+    ],
+	"location" : []   # this is an empty array
+}
+
+----------------------another example with an array of objects-------------------
+
+{
+   "comment": "# open and closing of an object block",
+   "name": "value",
+   "surname": "value",
+   "id":3,
+   "isProgrammer":true,
+   "hobbies": ["abc","def"],
+   "friends": [{ 
+     "comment": "# open and closing of an array of object block starting after [",
+     "name": "value",
+     "surname": "value",
+     "id":3,
+     "isProgrammer":true,
+     "hobbies": ["abc","def"],
+     "friends": [...]
+     },{
+     "name": "value",
+     "surname": "value",
+     "id":3,
+     "isProgrammer":true,
+     "hobbies": ["abc","def"],
+     "friends": [...]
+   }] # end of array of object block
+}
+
+----------------------------------- another example starting with a list---------------------
+
+[
+  {
+     "name": "IBM",
+	 "noOfEmp": 10000,
+	"ceo": "Marry",
+	"rating": 3.6
+  },
+  { 
+     "name": "somecmp",
+	 "noOfEmp": 1000,
+	"ceo": null,
+	"rating": 3.6
+  }
+]
+
+----------------------example-----------------
+
+"Config": {
+            "User": "27",
+            "ExposedPorts": {
+                "3306/tcp": {}  # this is an empty block / data object
+            }
+		  }
+----------------------------------------------
+

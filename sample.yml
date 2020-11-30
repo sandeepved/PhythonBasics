@@ -1,0 +1,208 @@
+# this is a comment
+# Indentation Sensitive (:space) -space
+
+# Key-Value Pairs -> 
+
+app: user OR 'user' or "user <special char>"
+port: 9000
+version: 1.7
+deployed: true # false # yes # no # on # off
+
+# Object: Microservice is an object with properties app, port, version
+
+Miscroservice:
+  app: user
+  port: 9000
+  version: 1.7
+  deployed: true
+
+# List of Objects 
+
+Miscroservice:
+  - app: user
+    port: 9000
+    version: 1.7
+    deployed: true
+  - app: admin
+    port: 9002
+    version: 1.9
+    deployed: false
+	
+# Alternative List of Objects in Folded Text format. Folded text converts newlines to spaces and removes the leading whitespace. 
+Miscroservice:
+  - {app: user, port: 9000, version: 1.7, deployed: true}
+  - {app: admin, port: 9002, version: 1.9, deployed: false}
+
+# List of Simple values in Conventional Block Format : This block format uses hyphen+space to begin a new item in a specified list. 
+Miscroservice:
+  - user
+  - admin
+ 
+ # Alternative List of Simple values Inline Format : Inline format is delimited with comma and space and the items are enclosed in JSON. 
+ Miscroservice: [user, admin]
+
+
+# List of Objects nesting :
+Miscroservice:
+  - app: user
+    port: 9000
+    version: 1.7
+    deployed: true
+  - app: admin
+    port: 9002
+    version:
+    - 1.9
+    - 2.0
+    - 3.0
+    deployed: false
+    
+# List of Objects nesting alternative way :
+Miscroservice:
+  - app: user
+    port: 9000
+    version: 1.7
+    deployed: true
+  - app: admin
+    port: 9002
+    version: ["1.9", 2.0, 3.0]
+    deployed: false
+    
+# List of Objects nesting list nesting :
+Miscroservice:
+  - app: user
+    port:  # plain list in a list of object
+      - httpPort: 8080
+      - httpsPort: 443
+    version: 1.7
+    deployed: true
+  - app: admin
+    port:  # list of objects in a list of object
+      - httpPort: 8080
+        mountPath: /tmp1
+      - httpsPort: 443
+        mountPath: /tmp2
+    version: ["1.9", 2.0, 3.0]
+    deployed: false
+    
+# Multi Line Strings using pipe symbol (each line will have \n as well)
+multiLineString: |
+      this is a multiline string
+      and this is the next line
+      etc etc
+      
+
+# more real life example, eg. to write config file in a yaml file
+data:
+  somefile.conf: |
+     log_dest stdout
+     log_type all
+     log_tinestamp true
+     listener 9001
+     
+# another multi-line example: put the whole contents of a script in a yaml
+
+command:
+  - sh
+  - -c 
+  - |
+    http() {
+       local path="{$1}"
+       curl -k "$@" "http://...URL/${path}"
+    }
+    http "/app/kibana"
+
+# Single Line Strings shown in mulitple line for better readibility using > symbol (no \n for each line)
+multiLineString: >
+      this is a multiline string
+      and this is the next line
+      etc etc
+      
+# Example of Env variables which are usedin pod, access them using $var. The newlines are removed with (-) operator and newlines are added with (+) operator. eg. >-, >+, |-, |+. Called Chomping
+command: 
+  - /bin/sh
+  - -ec
+  - >-
+    mysql -h host 
+    -u$user -p$pwd -e 'SELECT 1'
+    
+# More Examples for Chomping : |-, |+
+strip: text
+strip: |-
+   text
+clip: "text\n"
+clip: |
+   text
+keep: text
+keep: |+
+   text
+   
+# More Examples for Chomping : >-, >+,
+strip: text
+strip: >-
+   text
+clip: "text\n"
+clip: >
+   text
+keep: text
+keep: >+
+   text
+
+# exam for placeholders, instead of directly writing values we cna put placeholders using {{ .xxx }}. The values are replaced using the templates generated.
+
+metadata:
+  name: {{ .values.service.name }}
+  
+# Ex of one yaml can contents many yaml files like mulitple components / resource definition in a single file. You can sepoarate them using three --- dashes.
+
+apiVersion: v1
+kind: ConfigMap
+#...contents omitted...
+---
+apiVersion: v1
+kind: ConfigMap
+#...contents omitted...
+
+
+# Repeated nodes in each file are initially denoted by an ampersand (&) and by an asterisk (*) mark later. for ex. bill-to is repeated same in all blocks so in the first block its defined as &id001 and then referred later as *id001.
+invoice: 34843
+date   : 2001-01-23
+bill-to: &id001
+   given  : Chris
+   family : Dumars
+   address:
+      lines: |
+            458 Walkman Dr.
+            Suite #292
+      city    : Royal Oak
+      state   : MI
+      postal  : 48046
+ship-to: *id001
+product:
+    - sku         : BL394D
+      quantity    : 4
+      description : Basketball
+      price       : 450.00
+   - sku         : BL4438H
+      quantity    : 1
+      description : Super Hoop
+      price       : 2392.00
+tax  : 251.42
+total: 4443.52
+comments: >
+    Late afternoon is best.
+    Backup contact is Nancy
+    Billsmer @ 338-4338.
+    
+# Partial Block Example to repeat nodes. The defaults key with a prefix of “ <<: *” is included as and when required with no need to write the same code snippet repeatedly.
+defaults: &defaults
+   adapter:  postgres
+   host:     localhost
+
+development:
+   database: myapp_development
+   <<: *defaults
+
+test:
+   database: myapp_test
+   <<: *defaults
+   
